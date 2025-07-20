@@ -1,0 +1,97 @@
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  // it to manage text in the textField
+  final TextEditingController _controller = TextEditingController();
+
+  // its list of tasks,we will add our tasks into this List of strings
+  final List<String> _tasks = [];
+
+  // this is function for adding tasks to list
+  void _addTask() {
+    final text = _controller.text.trim();
+    if (text.isEmpty) {
+      if (text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Text can't be empty"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // важно выйти из функции
+      }
+    }
+    if (text.isNotEmpty) {
+      setState(() {
+        _tasks.add(text);
+        _controller.clear();
+      });
+    }
+  }
+
+  // this function to delete tasks from list
+  void deleteTask(int index) {
+    setState(() {
+      _tasks.removeAt(index);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: (Colors.blue),
+
+        title: Text("My Task App"),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            //its textField we will text here our task
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: "add task....",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
+
+            //this is button for calling addTask method and to add task to list
+            IconButton(onPressed: _addTask, icon: Icon(Icons.add)),
+            SizedBox(height: 16),
+
+            // here we will see our tasks added before
+            Expanded(
+              child: ListView.builder(
+                itemCount: _tasks.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(_tasks[index]),
+                      //this button gonna call deleteTask method and delete our task from list
+                      trailing: IconButton(
+                        onPressed: () => deleteTask(index),
+                        icon: Icon(Icons.delete),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
